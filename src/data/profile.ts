@@ -130,7 +130,7 @@ export const profile: ProfileData = {
   ],
   contact: {
     email: "m.assam@esisa.ac.ma",
-    location: "Fes, Maroc"
+    location: "Fès, Maroc"
   },
   stats: [
     { label: "Ecole", value: "ESISA" },
