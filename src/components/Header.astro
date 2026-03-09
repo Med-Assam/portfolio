@@ -14,6 +14,8 @@ const { navItems, profile } = Astro.props;
 const icons: Record<string, string> = {
   house: `<path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/>`,
   linkedin: `<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>`,
+  sun: `<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>`,
+  moon: `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>`,
 
   "user-round": `<circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/>`,
   cpu: `<rect width="16" height="16" x="4" y="4" rx="2"/><path d="M9 9h6v6H9z"/><path d="M15 2v2M15 20v2M9 2v2M9 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/>`,
@@ -46,9 +48,16 @@ const icons: Record<string, string> = {
       ))}
     </nav>
 
-    <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Ouvrir le menu" data-menu-toggle>
-      <span></span><span></span><span></span>
-    </button>
+    <div class="header-actions">
+      <button class="theme-toggle" aria-label="Basculer le theme" data-theme-toggle>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.sun}></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.moon}></svg>
+      </button>
+
+      <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Ouvrir le menu" data-menu-toggle>
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 
   <div class="drawer-backdrop" data-drawer-backdrop></div>
@@ -61,6 +70,12 @@ const icons: Record<string, string> = {
         </a>
       ))}
     </nav>
+
+    <button class="drawer-theme-toggle" data-theme-toggle aria-label="Basculer le theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.sun}></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.moon}></svg>
+      <span class="theme-label">Changer de theme</span>
+    </button>
 
     <div class="drawer-socials">
       {profile.socialLinks.map((social) => (
@@ -97,6 +112,11 @@ const icons: Record<string, string> = {
     justify-content: space-between;
     padding: 0 16px;
     box-shadow: 0 8px 26px rgba(0, 0, 0, 0.26);
+  }
+
+  :global(html[data-theme="light"]) .header-inner {
+    background: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.08);
   }
 
   .brand {
@@ -157,6 +177,100 @@ const icons: Record<string, string> = {
   .nav-link.is-active {
     border-color: rgba(78, 205, 196, 0.45);
     background: rgba(78, 205, 196, 0.14);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--text);
+    transition: background 180ms ease, border-color 180ms ease;
+  }
+
+  .theme-toggle:hover {
+    border-color: rgba(78, 205, 196, 0.45);
+    background: rgba(78, 205, 196, 0.14);
+  }
+
+  .theme-toggle svg {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  .theme-toggle .icon-sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.8);
+  }
+
+  .theme-toggle .icon-moon {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+
+  :global(html[data-theme="light"]) .theme-toggle .icon-sun {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+
+  :global(html[data-theme="light"]) .theme-toggle .icon-moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.8);
+  }
+
+  .drawer-theme-toggle {
+    padding: 12px 14px;
+    border: 1px solid rgba(78, 205, 196, 0.3);
+    border-radius: 12px;
+    background: rgba(78, 205, 196, 0.08);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text);
+    transition: background 180ms ease;
+  }
+
+  .drawer-theme-toggle:hover {
+    background: rgba(78, 205, 196, 0.16);
+  }
+
+  .drawer-theme-toggle svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .drawer-theme-toggle .icon-sun {
+    display: none;
+  }
+
+  .drawer-theme-toggle .icon-moon {
+    display: block;
+  }
+
+  :global(html[data-theme="light"]) .drawer-theme-toggle .icon-sun {
+    display: block;
+  }
+
+  :global(html[data-theme="light"]) .drawer-theme-toggle .icon-moon {
+    display: none;
+  }
+
+  .theme-label {
+    font-size: 0.95rem;
   }
 
   .menu-toggle {
@@ -223,6 +337,10 @@ const icons: Record<string, string> = {
     gap: 28px;
   }
 
+  :global(html[data-theme="light"]) .mobile-drawer {
+    background: rgba(255, 255, 255, 0.92);
+  }
+
   .mobile-nav {
     display: grid;
     gap: 10px;
@@ -280,6 +398,24 @@ const icons: Record<string, string> = {
 </style>
 
 <script>
+  // Theme toggle functionality
+  const themeToggles = document.querySelectorAll("[data-theme-toggle]");
+  
+  const setTheme = (theme: string) => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    const themeColor = theme === "light" ? "#f8fafc" : "#0a0f1e";
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", themeColor);
+  };
+
+  themeToggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      setTheme(newTheme);
+    });
+  });
+
   // Full mobile drawer lifecycle with body lock and keyboard/backdrop controls.
   const header = document.querySelector("[data-header]");
   const menuButton = document.querySelector("[data-menu-toggle]");

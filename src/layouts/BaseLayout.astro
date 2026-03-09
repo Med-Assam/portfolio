@@ -6,6 +6,8 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import BackToTop from "../components/BackToTop.astro";
+import AiAssistant from "../components/AiAssistant.astro";
+import ResumeExport from "../components/ResumeExport.astro";
 import { navItems, profile } from "../data/profile";
 
 const pageTitle = `${profile.fullName} | Portfolio`;
@@ -17,7 +19,18 @@ const pageTitle = `${profile.fullName} | Portfolio`;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={`Portfolio de ${profile.fullName}`} />
+    <meta name="theme-color" content="#0a0f1e" />
     <title>{pageTitle}</title>
+    <!-- Prevent FOUC: Apply saved theme before render -->
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#f8fafc' : '#0a0f1e');
+      })();
+    </script>
     <style is:global>
       :root {
         --bg: #0a0f1e;
@@ -41,6 +54,25 @@ const pageTitle = `${profile.fullName} | Portfolio`;
         --max-width: 1180px;
         --font-sans: "Inter", "Segoe UI", sans-serif;
         --font-mono: "JetBrains Mono", "Consolas", monospace;
+      }
+
+      /* Light theme overrides */
+      html[data-theme="light"] {
+        --bg: #f8fafc;
+        --bg-elev: #ffffff;
+        --surface: rgba(255, 255, 255, 0.85);
+        --text: #0f172a;
+        --muted: #64748b;
+        --primary: #0891b2;
+        --accent: #e11d48;
+        --success: #059669;
+        --warning: #d97706;
+        --border: rgba(0, 0, 0, 0.12);
+        --glow: rgba(8, 145, 178, 0.18);
+        --gradient-a: linear-gradient(135deg, #0891b2 0%, #06b6d4 45%, #e11d48 100%);
+        --gradient-b: linear-gradient(120deg, #f1f5f9 0%, #e2e8f0 48%, #cbd5e1 100%);
+        --shadow-soft: 0 14px 40px rgba(0, 0, 0, 0.08);
+        --shadow-glow: 0 0 0 1px var(--border), 0 18px 50px rgba(8, 145, 178, 0.1);
       }
 
       * {
@@ -141,6 +173,21 @@ const pageTitle = `${profile.fullName} | Portfolio`;
         bottom: 8%;
         background: rgba(255, 123, 114, 0.24);
         animation-delay: 1.4s;
+      }
+
+      html[data-theme="light"] .site-bg {
+        background:
+          linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        background-size: 36px 36px;
+      }
+
+      html[data-theme="light"] .site-bg::before {
+        background: rgba(8, 145, 178, 0.15);
+      }
+
+      html[data-theme="light"] .site-bg::after {
+        background: rgba(225, 29, 72, 0.12);
       }
 
       .container {
@@ -258,6 +305,8 @@ const pageTitle = `${profile.fullName} | Portfolio`;
     </main>
     <Footer navItems={navItems} profile={profile} />
     <BackToTop />
+    <AiAssistant />
+    <ResumeExport />
 
     <script>
       // Reveal elements as they enter the viewport for smooth section transitions.
@@ -275,6 +324,12 @@ const pageTitle = `${profile.fullName} | Portfolio`;
         { threshold: 0.18, rootMargin: "0px 0px -6% 0px" }
       );
       revealElements.forEach((element) => revealObserver.observe(element));
+    </script>
+
+    <!-- Vercel Analytics -->
+    <script>
+      import { inject } from "@vercel/analytics";
+      inject();
     </script>
   </body>
 </html>
