@@ -122,7 +122,7 @@ export const profile: ProfileData = {
   subtitle:
     "Etudiant a l'Ecole Superieure d'Ingenierie en Sciences Appliquees. Portfolio personnel axe sur les projets, l'apprentissage continu et la construction d'experiences web modernes.",
   availabilityBadge: "Disponible pour un stage",
-  avatar: "/Naruto%20Narut%20Wallpaper.jpg",
+  avatar: "https://avatars.githubusercontent.com/u/265370231?v=4",
   heroActions: [
     { label: "Voir mes projets", href: "#projects" },
     { label: "Me contacter", href: "#contact" },
