@@ -1,0 +1,190 @@
+---
+/**
+ * Publications with role-based grouping and computed metrics strip.
+ */
+import {
+  type ProfileData,
+  publicationStats,
+  firstAuthorPapers,
+  coAuthorPapers
+} from "../data/profile";
+
+type Props = { profile: ProfileData };
+const { profile } = Astro.props;
+
+const icons: Record<string, string> = {
+  external: `<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>`,
+  scholar: `<path d="m4 8 8-5 8 5"/><path d="M12 13V3"/><path d="M6 12v4a6 6 0 0 0 12 0v-4"/>`
+};
+---
+
+<section id="publications" class="section">
+  <div class="container">
+    <p class="section-kicker reveal">Research</p>
+    <h2 class="section-title reveal" data-delay="20">Publications</h2>
+
+    <div class="metrics glass-card reveal" data-delay="50">
+      <article><p>{publicationStats.totalPapers}</p><span>Total Papers</span></article>
+      <article><p>{publicationStats.firstAuthor}</p><span>First Author</span></article>
+      <article><p>{publicationStats.coAuthor}</p><span>Co-Author</span></article>
+      <article><p>{publicationStats.citations}</p><span>Citations</span></article>
+    </div>
+
+    {firstAuthorPapers.length > 0 && <p class="divider-label reveal">First Author</p>}
+    <div class="pub-list">
+      {firstAuthorPapers.map((paper, idx) => (
+        <article class="glass-card pub-card first reveal" data-delay={String(70 + idx * 40)}>
+          <span class="year">{paper.year}</span>
+          <h3>
+            <a href={paper.url} target="_blank" rel="noreferrer">
+              {paper.title}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.external}></svg>
+            </a>
+          </h3>
+          <p class="venue">{paper.venue}</p>
+          <p class="authors">{paper.authors.join(", ")}</p>
+          {paper.doi && <p class="doi">DOI: {paper.doi}</p>}
+        </article>
+      ))}
+    </div>
+
+    {coAuthorPapers.length > 0 && <p class="divider-label reveal">Co-Author</p>}
+    <div class="pub-list">
+      {coAuthorPapers.map((paper, idx) => (
+        <article class="glass-card pub-card co reveal" data-delay={String(80 + idx * 40)}>
+          <span class="year">{paper.year}</span>
+          <h3>
+            <a href={paper.url} target="_blank" rel="noreferrer">
+              {paper.title}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.external}></svg>
+            </a>
+          </h3>
+          <p class="venue">{paper.venue}</p>
+          <p class="authors">{paper.authors.join(", ")}</p>
+          {paper.doi && <p class="doi">DOI: {paper.doi}</p>}
+        </article>
+      ))}
+    </div>
+
+    {profile.academicLinks.length > 0 && (
+      <div class="academic-links reveal" data-delay="120">
+        {profile.academicLinks.map((item) => (
+          <a href={item.href} target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.scholar}></svg>
+            <span>{item.label}</span>
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .metrics {
+    margin-top: 18px;
+    padding: 14px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .metrics article {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .metrics p {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 760;
+    background: var(--gradient-a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .metrics span {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .pub-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .pub-card {
+    padding: 16px;
+    border-left: 3px solid;
+  }
+
+  .pub-card.first { border-left-color: #4ecdc4; }
+  .pub-card.co { border-left-color: #ffb454; }
+
+  .year,
+  .doi {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .pub-card h3 {
+    margin: 8px 0 4px;
+    font-size: 1.03rem;
+  }
+
+  .pub-card h3 a {
+    display: inline-flex;
+    gap: 7px;
+    align-items: center;
+  }
+
+  .pub-card h3 svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .venue {
+    margin: 0;
+    font-style: italic;
+    color: var(--primary);
+  }
+
+  .authors {
+    margin: 8px 0 0;
+    color: var(--muted);
+  }
+
+  .doi {
+    margin: 8px 0 0;
+  }
+
+  .academic-links {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .academic-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: #dce7ff;
+  }
+
+  .academic-links svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  @media (max-width: 768px) {
+    .metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

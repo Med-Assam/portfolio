@@ -1,0 +1,80 @@
+---
+/**
+ * Floating back-to-top button with scroll threshold visibility.
+ */
+const icons: Record<string, string> = {
+  up: `<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>`
+};
+---
+
+<button class="back-top" aria-label="Retour en haut" data-backtop>
+  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.up}></svg>
+</button>
+
+<style>
+  .back-top {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(12, 18, 31, 0.66);
+    color: #e8f2ff;
+    backdrop-filter: blur(14px);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 16px 35px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: opacity 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+    z-index: 85;
+  }
+
+  .back-top svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .back-top.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .back-top:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 34px rgba(78, 205, 196, 0.25);
+  }
+
+  @media (max-width: 768px) {
+    .back-top {
+      right: 14px;
+      bottom: 14px;
+      width: 44px;
+      height: 44px;
+    }
+  }
+</style>
+
+<script>
+  // Toggle button visibility after a scroll threshold and smooth-scroll on click.
+  const button = document.querySelector("[data-backtop]");
+  if (button) {
+    const onScroll = () => {
+      button.classList.toggle("is-visible", window.scrollY > 500);
+    };
+
+    window.addEventListener("scroll", () => requestAnimationFrame(onScroll), {
+      passive: true
+    });
+    onScroll();
+
+    button.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+</script>

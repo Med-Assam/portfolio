@@ -1,0 +1,28 @@
+---
+/**
+ * Index page assembling only active sections from central profile data.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
+import Skills from "../components/Skills.astro";
+import Education from "../components/Education.astro";
+import Experience from "../components/Experience.astro";
+import Publications from "../components/Publications.astro";
+import Certifications from "../components/Certifications.astro";
+import Projects from "../components/Projects.astro";
+import Contact from "../components/Contact.astro";
+import { profile, activeSections } from "../data/profile";
+---
+
+<BaseLayout>
+  <Hero profile={profile} />
+  {activeSections.about && <About profile={profile} />}
+  {activeSections.skills && <Skills profile={profile} />}
+  {activeSections.education && <Education profile={profile} />}
+  {activeSections.experience && <Experience profile={profile} />}
+  {activeSections.publications && <Publications profile={profile} />}
+  {activeSections.certifications && <Certifications profile={profile} />}
+  {activeSections.projects && <Projects profile={profile} />}
+  {activeSections.contact && <Contact profile={profile} />}
+</BaseLayout>

@@ -1,0 +1,118 @@
+---
+/**
+ * Certification cards with providers, dates and covered skills.
+ */
+import type { ProfileData } from "../data/profile";
+
+type Props = { profile: ProfileData };
+const { profile } = Astro.props;
+
+const icons: Record<string, string> = {
+  award: `<circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 18 22l-6-3-6 3 2.5-8.5"/>`,
+  external: `<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>`
+};
+---
+
+<section id="certifications" class="section">
+  <div class="container">
+    <p class="section-kicker reveal">Credentials</p>
+    <h2 class="section-title reveal" data-delay="20">Certifications et formations</h2>
+
+    <div class="cert-grid">
+      {profile.certifications.map((item, index) => (
+        <article class="glass-card cert-card reveal" data-delay={String(70 + index * 40)}>
+          <span class="cert-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[item.icon] ?? icons.award}></svg>
+          </span>
+          <h3>{item.name}</h3>
+          <p class="provider">
+            {item.providerUrl ? (
+              <a href={item.providerUrl} target="_blank" rel="noreferrer">
+                {item.provider}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.external}></svg>
+              </a>
+            ) : (
+              item.provider
+            )}
+          </p>
+          <p class="date">{item.date}</p>
+          <div class="chips">
+            {item.skills.map((skill) => (
+              <span>{skill}</span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cert-grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .cert-card {
+    padding: 18px;
+  }
+
+  .cert-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .cert-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .cert-card h3 {
+    margin: 12px 0 6px;
+  }
+
+  .provider,
+  .date {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .provider a {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .provider svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .chips {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chips span {
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  @media (max-width: 960px) {
+    .cert-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

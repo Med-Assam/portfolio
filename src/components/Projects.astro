@@ -1,0 +1,137 @@
+---
+/**
+ * Project gallery cards with decorative numbering, tags and outbound links.
+ */
+import type { ProfileData } from "../data/profile";
+
+type Props = { profile: ProfileData };
+const { profile } = Astro.props;
+
+const icons: Record<string, string> = {
+  external: `<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>`,
+  arrow: `<path d="M5 12h14"/><path d="m13 5 7 7-7 7"/>`
+};
+---
+
+<section id="projects" class="section">
+  <div class="container">
+    <p class="section-kicker reveal">Work</p>
+    <h2 class="section-title reveal" data-delay="20">Projets</h2>
+
+    <div class="project-grid">
+      {profile.projects.map((item, index) => (
+        <article class="glass-card project-card reveal" data-delay={String(70 + index * 45)}>
+          <span class="watermark">{String(index + 1).padStart(2, "0")}</span>
+          <h3>
+            {item.url ? (
+              <a href={item.url} target="_blank" rel="noreferrer">
+                {item.title}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.external}></svg>
+              </a>
+            ) : (
+              item.title
+            )}
+          </h3>
+          <p>{item.description}</p>
+
+          <div class="tags">
+            {item.tags.map((tag) => (
+              <span>{tag}</span>
+            ))}
+          </div>
+
+          {item.url && (
+            <a href={item.url} target="_blank" rel="noreferrer" class="view-link">
+              <span>View Project</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.arrow}></svg>
+            </a>
+          )}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .project-grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .project-card {
+    padding: 18px;
+    position: relative;
+  }
+
+  .watermark {
+    position: absolute;
+    right: 14px;
+    top: 12px;
+    font-size: 2.5rem;
+    font-weight: 800;
+    opacity: 0.2;
+    background: var(--gradient-a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    pointer-events: none;
+  }
+
+  .project-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .project-card h3 a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .project-card h3 svg,
+  .view-link svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .project-card p {
+    margin: 10px 0 0;
+    color: var(--muted);
+    max-width: 60ch;
+  }
+
+  .tags {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tags span {
+    border-radius: 999px;
+    padding: 6px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 0.82rem;
+  }
+
+  .view-link {
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #d8e9ff;
+  }
+
+  .project-card:hover .view-link svg {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 900px) {
+    .project-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,342 @@
+---
+/**
+ * Sticky glassmorphism header with responsive drawer menu and active-link tracking.
+ */
+import type { NavItem, ProfileData } from "../data/profile";
+
+type Props = {
+  navItems: NavItem[];
+  profile: ProfileData;
+};
+
+const { navItems, profile } = Astro.props;
+
+const icons: Record<string, string> = {
+  house: `<path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/>`,
+  "user-round": `<circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/>`,
+  cpu: `<rect width="16" height="16" x="4" y="4" rx="2"/><path d="M9 9h6v6H9z"/><path d="M15 2v2M15 20v2M9 2v2M9 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/>`,
+  "graduation-cap": `<path d="M2 10 12 5l10 5-10 5-10-5Z"/><path d="M6 12v5c0 1.6 2.7 3 6 3s6-1.4 6-3v-5"/>`,
+  briefcase: `<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M2 13h20"/>`,
+  "book-open": `<path d="M12 7v14"/><path d="M3 18V6a2 2 0 0 1 2-2h6a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H5a2 2 0 0 0-2 2"/><path d="M21 18V6a2 2 0 0 0-2-2h-6a3 3 0 0 0-3 3"/>`,
+  award: `<circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 18 22l-6-3-6 3 2.5-8.5"/>`,
+  "folder-kanban": `<path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/><path d="M8 10v4M12 10v6M16 10v3"/>`,
+  send: `<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>`,
+  github: `<path d="M15 22v-4a4 4 0 0 0-1-2.8c3.2-.35 6.5-1.6 6.5-7.2A5.6 5.6 0 0 0 19 4.3 5.2 5.2 0 0 0 18.9 1s-1.2-.4-3.9 1.5a13.4 13.4 0 0 0-7 0C5.3.6 4.1 1 4.1 1A5.2 5.2 0 0 0 4 4.3a5.6 5.6 0 0 0-1.5 3.7c0 5.6 3.3 6.8 6.5 7.2A4 4 0 0 0 8 18v4"/><path d="M9 18c-4.5 2-5-2-7-2"/>`,
+  mail: `<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 6L2 7"/>`
+};
+---
+
+<header class="site-header" data-header>
+  <div class="container header-inner">
+    <a href="#hero" class="brand" aria-label="Aller a l'accueil">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="m12 4 8 8-8 8"/></svg>
+      </span>
+      <span class="brand-name">{profile.fullName}</span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Navigation principale">
+      {navItems.map((item) => (
+        <a href={`#${item.id}`} class="nav-link" data-nav-link data-target={item.id}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[item.icon]}></svg>
+          <span>{item.label}</span>
+        </a>
+      ))}
+    </nav>
+
+    <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Ouvrir le menu" data-menu-toggle>
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="drawer-backdrop" data-drawer-backdrop></div>
+  <aside id="mobile-drawer" class="mobile-drawer" aria-hidden="true" data-mobile-drawer>
+    <nav class="mobile-nav" aria-label="Navigation mobile">
+      {navItems.map((item) => (
+        <a href={`#${item.id}`} class="drawer-link" data-drawer-link>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[item.icon]}></svg>
+          <span>{item.label}</span>
+        </a>
+      ))}
+    </nav>
+
+    <div class="drawer-socials">
+      {profile.socialLinks.map((social) => (
+        <a href={social.href} target="_blank" rel="noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[social.icon] ?? icons.mail}></svg>
+          <span>{social.label}</span>
+        </a>
+      ))}
+    </div>
+  </aside>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: padding 220ms ease;
+    padding: 14px 0;
+  }
+
+  .site-header.is-compact {
+    padding: 8px 0;
+  }
+
+  .header-inner {
+    height: 68px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(10, 17, 31, 0.62);
+    backdrop-filter: blur(14px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.26);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: var(--gradient-a);
+    color: #031117;
+    flex-shrink: 0;
+  }
+
+  .brand-mark svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .brand-name {
+    font-weight: 650;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 240px;
+  }
+
+  .desktop-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-link {
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #d7e3ff;
+    border: 1px solid transparent;
+    transition: background 180ms ease, border-color 180ms ease;
+  }
+
+  .nav-link svg,
+  .drawer-link svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .nav-link:hover,
+  .nav-link.is-active {
+    border-color: rgba(78, 205, 196, 0.45);
+    background: rgba(78, 205, 196, 0.14);
+  }
+
+  .menu-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 9px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .menu-toggle span {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    height: 2px;
+    background: #edf3ff;
+    transition: transform 220ms ease, opacity 220ms ease;
+  }
+
+  .menu-toggle span:nth-child(1) { top: 13px; }
+  .menu-toggle span:nth-child(2) { top: 21px; }
+  .menu-toggle span:nth-child(3) { top: 29px; }
+
+  .menu-toggle.is-open span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .menu-toggle.is-open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.is-open span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 9, 19, 0.52);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+  }
+
+  .mobile-drawer {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    width: min(82vw, 360px);
+    border-left: 1px solid var(--border);
+    background: rgba(10, 15, 26, 0.92);
+    backdrop-filter: blur(18px);
+    padding: 96px 24px 24px;
+    transform: translateX(106%);
+    transition: transform 260ms ease;
+    display: grid;
+    align-content: start;
+    gap: 28px;
+  }
+
+  .mobile-nav {
+    display: grid;
+    gap: 10px;
+  }
+
+  .drawer-link {
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    display: inline-flex;
+    gap: 9px;
+    align-items: center;
+  }
+
+  .drawer-socials {
+    display: grid;
+    gap: 8px;
+  }
+
+  .drawer-socials a {
+    color: var(--muted);
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .drawer-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-drawer.is-open {
+    transform: translateX(0);
+  }
+
+  @media (max-width: 768px) {
+    .desktop-nav {
+      display: none;
+    }
+
+    .menu-toggle {
+      display: block;
+    }
+
+    .header-inner {
+      height: 62px;
+      padding-inline: 12px;
+    }
+
+    .brand-name {
+      max-width: 160px;
+      font-size: 0.95rem;
+    }
+  }
+</style>
+
+<script>
+  // Full mobile drawer lifecycle with body lock and keyboard/backdrop controls.
+  const header = document.querySelector("[data-header]");
+  const menuButton = document.querySelector("[data-menu-toggle]");
+  const drawer = document.querySelector("[data-mobile-drawer]");
+  const backdrop = document.querySelector("[data-drawer-backdrop]");
+  const drawerLinks = document.querySelectorAll("[data-drawer-link]");
+  const navLinks = document.querySelectorAll("[data-nav-link]");
+
+  const setOpenState = (isOpen) => {
+    if (!menuButton || !drawer || !backdrop) return;
+    menuButton.classList.toggle("is-open", isOpen);
+    backdrop.classList.toggle("is-open", isOpen);
+    drawer.classList.toggle("is-open", isOpen);
+    menuButton.setAttribute("aria-expanded", String(isOpen));
+    drawer.setAttribute("aria-hidden", String(!isOpen));
+    document.body.classList.toggle("menu-open", isOpen);
+  };
+
+  if (menuButton && drawer && backdrop) {
+    menuButton.addEventListener("click", () => {
+      const isOpen = menuButton.classList.contains("is-open");
+      setOpenState(!isOpen);
+    });
+
+    backdrop.addEventListener("click", () => setOpenState(false));
+    drawerLinks.forEach((link) => link.addEventListener("click", () => setOpenState(false)));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpenState(false);
+    });
+  }
+
+  // Add compact header style when scrolling for a tighter top bar.
+  const compactHeader = () => {
+    if (!header) return;
+    header.classList.toggle("is-compact", window.scrollY > 40);
+  };
+
+  window.addEventListener("scroll", () => requestAnimationFrame(compactHeader), {
+    passive: true
+  });
+  compactHeader();
+
+  // Track active section link using IntersectionObserver (no scroll events).
+  const sections = [...document.querySelectorAll("main section[id]")];
+  if (sections.length > 0 && navLinks.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const activeId = entry.target.getAttribute("id");
+          navLinks.forEach((link) => {
+            link.classList.toggle("is-active", link.getAttribute("data-target") === activeId);
+          });
+        });
+      },
+      { threshold: 0.55, rootMargin: "-20% 0px -35% 0px" }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>

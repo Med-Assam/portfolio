@@ -1,0 +1,108 @@
+---
+/**
+ * Experience cards with current-role badge and hover slide accent.
+ */
+import type { ProfileData } from "../data/profile";
+
+type Props = { profile: ProfileData };
+const { profile } = Astro.props;
+
+const icons: Record<string, string> = {
+  external: `<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>`
+};
+---
+
+<section id="experience" class="section">
+  <div class="container">
+    <p class="section-kicker reveal">Experience</p>
+    <h2 class="section-title reveal" data-delay="20">Experience professionnelle</h2>
+
+    <div class="stack">
+      {profile.experience.map((item, index) => (
+        <article class="glass-card xp-card reveal" data-delay={String(60 + index * 50)}>
+          <p class="period">{item.period}</p>
+          {item.current && <span class="current">Current</span>}
+          <h3>{item.role}</h3>
+          <p class="org">
+            {item.organizationUrl ? (
+              <a href={item.organizationUrl} target="_blank" rel="noreferrer">
+                {item.organization}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.external}></svg>
+              </a>
+            ) : (
+              item.organization
+            )}
+          </p>
+          <p class="desc">{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .stack {
+    margin-top: 20px;
+    display: grid;
+    gap: 14px;
+  }
+
+  .xp-card {
+    padding: 18px;
+    border-left: 3px solid transparent;
+    border-image: var(--gradient-a) 1;
+    transition: transform 240ms ease;
+  }
+
+  .xp-card:hover {
+    transform: translateX(6px) translateY(-4px);
+  }
+
+  .period,
+  .current {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .period {
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .current {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(78, 205, 196, 0.4);
+    color: #aff9df;
+    background: rgba(78, 205, 196, 0.14);
+  }
+
+  .xp-card h3 {
+    margin: 8px 0 4px;
+  }
+
+  .org {
+    margin: 0;
+    color: var(--primary);
+  }
+
+  .org a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .org svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .desc {
+    margin: 8px 0 0;
+    color: var(--muted);
+  }
+</style>

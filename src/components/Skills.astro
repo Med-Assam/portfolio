@@ -1,0 +1,161 @@
+---
+/**
+ * Skills section with technical categories and optional soft-skill cards.
+ */
+import type { ProfileData } from "../data/profile";
+
+type Props = { profile: ProfileData };
+const { profile } = Astro.props;
+
+const icons: Record<string, string> = {
+  "code-2": `<path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/>`,
+  wrench: `<path d="M14.7 6.3a4 4 0 0 0-5 5L3 18v3h3l6.7-6.7a4 4 0 0 0 5-5l-3 3-3-3 3-3Z"/>`,
+  layers: `<path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/>`,
+  "message-square": `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/>`,
+  compass: `<circle cx="12" cy="12" r="10"/><path d="m16 8-2.5 5.5L8 16l2.5-5.5L16 8Z"/>`,
+  "check-circle-2": `<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>`
+};
+---
+
+<section id="skills" class="section">
+  <div class="container">
+    <p class="section-kicker reveal">Skills</p>
+    <h2 class="section-title reveal" data-delay="20">Competences</h2>
+
+    {profile.technicalSkills.length > 0 && <p class="divider-label reveal">Technical Skills</p>}
+    <div class="skills-grid">
+      {profile.technicalSkills.map((group, index) => (
+        <article class="glass-card skill-card reveal" data-delay={String(70 + index * 40)}>
+          <div class="skill-head">
+            <span class="skill-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[group.icon] ?? icons.layers}></svg>
+            </span>
+            <div>
+              <h3>{group.category}</h3>
+              <p>{String(group.items.length).padStart(2, "0")} skills</p>
+            </div>
+          </div>
+          <div class="chips">
+            {group.items.map((item) => (
+              <span>{item}</span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {profile.softSkills.length > 0 && <p class="divider-label reveal">Soft Skills</p>}
+    {profile.softSkills.length > 0 && (
+      <div class="soft-grid">
+        {profile.softSkills.map((item, index) => (
+          <article class="glass-card soft-card reveal" data-delay={String(90 + index * 45)}>
+            <span class="soft-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[item.icon] ?? icons.compass}></svg>
+            </span>
+            <div>
+              <h3>{item.name}</h3>
+              <p>{item.description}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .skills-grid,
+  .soft-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .skills-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .skill-card {
+    padding: 18px;
+  }
+
+  .skill-head {
+    display: flex;
+    gap: 10px;
+  }
+
+  .skill-icon,
+  .soft-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: rgba(78, 205, 196, 0.14);
+    border: 1px solid rgba(78, 205, 196, 0.35);
+    transition: transform 220ms ease, box-shadow 220ms ease;
+  }
+
+  .skill-card:hover .skill-icon,
+  .soft-card:hover .soft-icon {
+    transform: scale(1.08);
+    box-shadow: 0 0 18px rgba(78, 205, 196, 0.24);
+  }
+
+  .skill-icon svg,
+  .soft-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .skill-head h3,
+  .soft-card h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .skill-head p {
+    margin: 4px 0 0;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .chips {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chips span {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 0.82rem;
+  }
+
+  .soft-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .soft-card {
+    padding: 18px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .soft-card p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 960px) {
+    .skills-grid,
+    .soft-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
