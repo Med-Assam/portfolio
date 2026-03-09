@@ -65,10 +65,10 @@ const icons: Record<string, string> = {
 
   {profile.stats.length > 0 && (
     <div class="container reveal" data-delay="130">
-      <div class="stats-grid glass-card">
+      <div class="stats-grid glass-card" data-stats-grid>
         {profile.stats.map((stat) => (
           <article class="stat-item">
-            <p class="stat-value">{stat.value}</p>
+            <p class="stat-value" data-stat-value={stat.value}>{stat.value}</p>
             <p class="stat-label">{stat.label}</p>
           </article>
         ))}
@@ -344,4 +344,77 @@ const icons: Record<string, string> = {
       document.dispatchEvent(new CustomEvent("open-resume-modal"));
     });
   }
+
+  // Animated stat counters
+  const animateStats = () => {
+    const statsGrid = document.querySelector("[data-stats-grid]");
+    if (!statsGrid) return;
+
+    const statValues = statsGrid.querySelectorAll("[data-stat-value]");
+    let animated = false;
+
+    const animateNumber = (el: HTMLElement) => {
+      const finalValue = el.dataset.statValue || "";
+      
+      // Extract numeric part
+      const match = finalValue.match(/^(\d+)(\+?)(.*)$/);
+      if (!match) {
+        el.textContent = finalValue;
+        return;
+      }
+
+      const targetNum = parseInt(match[1], 10);
+      const plusSign = match[2];
+      const suffix = match[3];
+      
+      const duration = 1500;
+      const startTime = performance.now();
+
+      const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+
+      const update = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutQuart(progress);
+        const currentNum = Math.floor(easedProgress * targetNum);
+
+        el.textContent = currentNum + plusSign + suffix;
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          el.textContent = finalValue;
+        }
+      };
+
+      requestAnimationFrame(update);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !animated) {
+            animated = true;
+            statValues.forEach((el) => {
+              const htmlEl = el as HTMLElement;
+              // Initialize with 0 before animation
+              const finalValue = htmlEl.dataset.statValue || "";
+              const match = finalValue.match(/^(\d+)/);
+              if (match) {
+                htmlEl.textContent = "0";
+              }
+              // Small delay for stagger effect
+              setTimeout(() => animateNumber(htmlEl), Math.random() * 200);
+            });
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(statsGrid);
+  };
+
+  animateStats();
 </script>

@@ -1,0 +1,282 @@
+---
+/**
+ * Custom 404 page with consistent styling
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { profile } from "../data/profile";
+---
+
+<BaseLayout title="Page non trouvée | 404" description="La page que vous cherchez n'existe pas.">
+  <section class="error-section">
+    <div class="container error-container">
+      <div class="error-content">
+        <div class="error-code">
+          <span class="four">4</span>
+          <span class="zero">
+            <span class="zero-inner"></span>
+          </span>
+          <span class="four">4</span>
+        </div>
+        
+        <h1 class="error-title">Page non trouvée</h1>
+        <p class="error-message">
+          Oups ! La page que vous cherchez semble avoir disparu dans le cyberespace.
+        </p>
+        
+        <div class="error-actions">
+          <a href="/" class="error-btn is-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span>Retour à l'accueil</span>
+          </a>
+          <a href="/#contact" class="error-btn is-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="16" x="2" y="4" rx="2"/>
+              <path d="m22 7-10 6L2 7"/>
+            </svg>
+            <span>Me contacter</span>
+          </a>
+        </div>
+        
+        <div class="helpful-links glass-card">
+          <p class="links-title">Liens utiles</p>
+          <nav class="links-grid">
+            <a href="/#about">À propos</a>
+            <a href="/#skills">Compétences</a>
+            <a href="/#projects">Projets</a>
+            <a href="/#contact">Contact</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="floating-shapes" aria-hidden="true">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .error-section {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px 20px;
+  }
+
+  .error-container {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .error-code {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .four {
+    font-size: clamp(5rem, 15vw, 10rem);
+    font-weight: 900;
+    background: var(--gradient-a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+    animation: pulse404 2s ease-in-out infinite;
+  }
+
+  .four:last-child {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes pulse404 {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(0.98); }
+  }
+
+  .zero {
+    width: clamp(4rem, 12vw, 8rem);
+    height: clamp(4rem, 12vw, 8rem);
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #4ecdc4, #76e4f7, #ff7b72, #4ecdc4);
+    display: grid;
+    place-items: center;
+    animation: spin404 6s linear infinite;
+  }
+
+  .zero-inner {
+    width: 75%;
+    height: 75%;
+    border-radius: 50%;
+    background: var(--bg-primary);
+  }
+
+  @keyframes spin404 {
+    to { transform: rotate(360deg); }
+  }
+
+  .error-title {
+    margin: 0 0 12px;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: #fff;
+  }
+
+  .error-message {
+    max-width: 50ch;
+    margin: 0 auto 32px;
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .error-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .error-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: transform 220ms ease, box-shadow 220ms ease;
+  }
+
+  .error-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .error-btn.is-primary {
+    background: var(--gradient-a);
+    color: #041017;
+  }
+
+  .error-btn.is-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 32px rgba(78, 205, 196, 0.3);
+  }
+
+  .error-btn.is-secondary {
+    border: 1px solid var(--border);
+    background: rgba(11, 17, 31, 0.62);
+    color: var(--text);
+  }
+
+  .error-btn.is-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
+  }
+
+  .helpful-links {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .links-title {
+    margin: 0 0 16px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .links-grid a {
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    transition: background 200ms ease, transform 200ms ease;
+  }
+
+  .links-grid a:hover {
+    background: rgba(78, 205, 196, 0.15);
+    transform: translateX(4px);
+  }
+
+  /* Floating background shapes */
+  .floating-shapes {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+  }
+
+  .shape-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--accent-primary);
+    top: -100px;
+    left: -100px;
+    animation: float1 15s ease-in-out infinite;
+  }
+
+  .shape-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--accent-secondary);
+    bottom: -50px;
+    right: -50px;
+    animation: float2 12s ease-in-out infinite;
+  }
+
+  .shape-3 {
+    width: 200px;
+    height: 200px;
+    background: #ff7b72;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: float3 10s ease-in-out infinite;
+  }
+
+  @keyframes float1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, 30px); }
+  }
+
+  @keyframes float2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-20px, -20px); }
+  }
+
+  @keyframes float3 {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+  }
+
+  @media (max-width: 600px) {
+    .links-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

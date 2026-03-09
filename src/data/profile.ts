@@ -118,9 +118,9 @@ export const profile: ProfileData = {
   firstName: "Mohamed",
   lastName: "ASSAM",
   fullName: "Mohamed ASSAM",
-  title: "Etudiant en Informatique",
+  title: "Etudiant en Ingenierie - ESISA",
   subtitle:
-    "Portfolio personnel axe sur les projets, l'apprentissage continu et la construction d'experiences web modernes.",
+    "Etudiant a l'Ecole Superieure d'Ingenierie en Sciences Appliquees. Portfolio personnel axe sur les projets, l'apprentissage continu et la construction d'experiences web modernes.",
   availabilityBadge: "Disponible pour un stage",
   avatar: "https://avatars.githubusercontent.com/u/265370231?v=4",
   heroActions: [
@@ -129,13 +129,14 @@ export const profile: ProfileData = {
     { label: "Mon GitHub", href: "https://github.com/Med-Assam" }
   ],
   contact: {
-    email: "m.assam@esisa.ac.ma"
+    email: "m.assam@esisa.ac.ma",
+    location: "Fes, Maroc"
   },
   stats: [
-    { label: "Repositories publics", value: "1" },
-    { label: "Contributions (12 mois)", value: "2" },
-    { label: "Annee GitHub", value: "2026" },
-    { label: "Portfolio en ligne", value: "1" }
+    { label: "Ecole", value: "ESISA" },
+    { label: "Technologies", value: "6+" },
+    { label: "Projets", value: "1" },
+    { label: "Objectif", value: "Stage" }
   ],
   about: [
     {
@@ -189,7 +190,17 @@ export const profile: ProfileData = {
       description: "Attention aux details, tests manuels et documentation propre."
     }
   ],
-  education: [],
+  education: [
+    {
+      period: "2024 - Present",
+      degree: "Cycle Ingenieur",
+      field: "Sciences Appliquees",
+      institution: "ESISA - Ecole Superieure d'Ingenierie en Sciences Appliquees",
+      institutionUrl: "https://esisa.ac.ma",
+      description: "Formation en ingenierie informatique avec specialisation en developpement logiciel et technologies web.",
+      latest: true
+    }
+  ],
   experience: [],
   publications: [],
   certifications: [],

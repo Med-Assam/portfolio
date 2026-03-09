@@ -31,8 +31,14 @@ const contactCards = [
 ].filter(Boolean) as Array<{ label: string; value: string; href?: string; icon: string }>;
 
 const formAction = profile.contact.email
-  ? `https://formsubmit.co/${profile.contact.email}`
-  : "https://formsubmit.co/"
+  ? `https://formsubmit.co/ajax/${profile.contact.email}`
+  : "https://formsubmit.co/ajax/"
+
+const toastIcons: Record<string, string> = {
+  check: `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>`,
+  alert: `<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>`,
+  x: `<path d="M18 6 6 18"/><path d="M6 6l12 12"/>`
+};
 ---
 
 <section id="contact" class="section">
@@ -65,9 +71,8 @@ const formAction = profile.contact.email
         </div>
       </div>
 
-      <form class="glass-card contact-form reveal" data-delay="90" action={formAction} method="POST">
-        <input type="hidden" name="_captcha" value="false" />
-        <input type="hidden" name="_template" value="table" />
+      <form class="glass-card contact-form reveal" data-delay="90" data-contact-form data-action={formAction}>
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
 
         <label for="name">Nom</label>
         <input id="name" name="name" type="text" required />
@@ -81,14 +86,34 @@ const formAction = profile.contact.email
         <label for="message">Message</label>
         <textarea id="message" name="message" rows="5" required></textarea>
 
-        <button type="submit">
-          <span>Envoyer</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.send}></svg>
+        <button type="submit" data-submit-btn>
+          <span class="btn-text">Envoyer</span>
+          <span class="btn-spinner"></span>
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons.send}></svg>
         </button>
       </form>
     </div>
   </div>
 </section>
+
+<!-- Toast Overlay -->
+<div class="toast-overlay" data-toast-overlay aria-hidden="true">
+  <div class="toast-backdrop" data-toast-backdrop></div>
+  <div class="toast-content glass-card" data-toast-content>
+    <button class="toast-close" data-toast-close aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={toastIcons.x}></svg>
+    </button>
+    <div class="toast-icon success" data-toast-icon-success>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={toastIcons.check}></svg>
+    </div>
+    <div class="toast-icon error" data-toast-icon-error>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={toastIcons.alert}></svg>
+    </div>
+    <h3 class="toast-title" data-toast-title>Message envoyé !</h3>
+    <p class="toast-message" data-toast-message>Merci pour votre message. Je vous répondrai dès que possible.</p>
+    <button class="toast-btn" data-toast-btn>Fermer</button>
+  </div>
+</div>
 
 <style>
   .contact-grid {
@@ -219,15 +244,190 @@ const formAction = profile.contact.email
     gap: 8px;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 220ms ease;
   }
 
-  .contact-form button svg {
+  .contact-form button svg.btn-icon {
     width: 16px;
     height: 16px;
+    transition: opacity 200ms ease;
+  }
+
+  .contact-form button .btn-text {
+    transition: opacity 200ms ease;
+  }
+
+  .contact-form button .btn-spinner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .contact-form button.loading .btn-text,
+  .contact-form button.loading .btn-icon {
+    opacity: 0;
+  }
+
+  .contact-form button.loading .btn-spinner {
+    opacity: 1;
+  }
+
+  .contact-form button.loading {
+    pointer-events: none;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 
   .contact-form button:hover {
     box-shadow: 0 12px 26px rgba(78, 205, 196, 0.3);
+  }
+
+  /* Toast Overlay */
+  .toast-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 300ms ease, visibility 300ms ease;
+  }
+
+  .toast-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .toast-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(6, 11, 22, 0.85);
+    backdrop-filter: blur(6px);
+  }
+
+  .toast-content {
+    position: relative;
+    max-width: 400px;
+    width: 90%;
+    padding: 32px;
+    text-align: center;
+    transform: translateY(20px) scale(0.95);
+    transition: transform 300ms ease;
+  }
+
+  .toast-overlay.show .toast-content {
+    transform: translateY(0) scale(1);
+  }
+
+  .toast-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background 200ms ease;
+  }
+
+  .toast-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .toast-close svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--muted);
+  }
+
+  .toast-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    animation: popIn 400ms ease;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  .toast-icon.success {
+    background: rgba(78, 205, 196, 0.18);
+    border: 2px solid rgba(78, 205, 196, 0.5);
+    display: none;
+  }
+
+  .toast-icon.success svg {
+    width: 28px;
+    height: 28px;
+    stroke: var(--accent-primary);
+  }
+
+  .toast-icon.error {
+    background: rgba(255, 107, 107, 0.18);
+    border: 2px solid rgba(255, 107, 107, 0.5);
+    display: none;
+  }
+
+  .toast-icon.error svg {
+    width: 28px;
+    height: 28px;
+    stroke: #ff6b6b;
+  }
+
+  .toast-overlay.success .toast-icon.success {
+    display: grid;
+  }
+
+  .toast-overlay.error .toast-icon.error {
+    display: grid;
+  }
+
+  .toast-title {
+    margin: 0 0 10px;
+    font-size: 1.4rem;
+    color: #fff;
+  }
+
+  .toast-message {
+    margin: 0 0 24px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .toast-btn {
+    border: none;
+    border-radius: 10px;
+    background: var(--gradient-a);
+    color: #041018;
+    font-weight: 700;
+    padding: 12px 32px;
+    cursor: pointer;
+    transition: box-shadow 200ms ease, transform 200ms ease;
+  }
+
+  .toast-btn:hover {
+    box-shadow: 0 10px 20px rgba(78, 205, 196, 0.3);
+    transform: translateY(-2px);
   }
 
   @media (max-width: 920px) {
@@ -236,3 +436,77 @@ const formAction = profile.contact.email
     }
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('[data-contact-form]') as HTMLFormElement;
+    const submitBtn = document.querySelector('[data-submit-btn]') as HTMLButtonElement;
+    const toastOverlay = document.querySelector('[data-toast-overlay]') as HTMLElement;
+    const toastClose = document.querySelector('[data-toast-close]') as HTMLButtonElement;
+    const toastBtn = document.querySelector('[data-toast-btn]') as HTMLButtonElement;
+    const toastBackdrop = document.querySelector('[data-toast-backdrop]') as HTMLElement;
+    const toastTitle = document.querySelector('[data-toast-title]') as HTMLElement;
+    const toastMessage = document.querySelector('[data-toast-message]') as HTMLElement;
+
+    if (!form) return;
+
+    const formAction = form.dataset.action || '';
+
+    const showToast = (type: 'success' | 'error', title: string, message: string) => {
+      toastOverlay.classList.remove('success', 'error');
+      toastOverlay.classList.add(type, 'show');
+      toastOverlay.setAttribute('aria-hidden', 'false');
+      toastTitle.textContent = title;
+      toastMessage.textContent = message;
+      document.body.style.overflow = 'hidden';
+    };
+
+    const hideToast = () => {
+      toastOverlay.classList.remove('show');
+      toastOverlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+
+    toastClose?.addEventListener('click', hideToast);
+    toastBtn?.addEventListener('click', hideToast);
+    toastBackdrop?.addEventListener('click', hideToast);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Anti-bot honeypot check
+      const honeypot = form.querySelector('input[name="_honey"]') as HTMLInputElement;
+      if (honeypot?.value) return;
+
+      submitBtn.classList.add('loading');
+
+      const formData = new FormData(form);
+      const data: Record<string, string> = {};
+      formData.forEach((value, key) => {
+        if (key !== '_honey') data[key] = value.toString();
+      });
+
+      try {
+        const response = await fetch(formAction, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          showToast('success', 'Message envoyé !', 'Merci pour votre message. Je vous répondrai dès que possible.');
+          form.reset();
+        } else {
+          throw new Error('Erreur de soumission');
+        }
+      } catch (error) {
+        showToast('error', 'Erreur d\'envoi', 'Une erreur est survenue. Veuillez réessayer ou me contacter directement par email.');
+      } finally {
+        submitBtn.classList.remove('loading');
+      }
+    });
+  });
+</script>
