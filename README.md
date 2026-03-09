@@ -6,6 +6,19 @@ Portfolio moderne construit avec Astro, structure modulaire et contenu centralis
 
 ---
 
+## ✨ Fonctionnalites
+
+- 🌓 **Theme clair/sombre** : Basculement avec persistance localStorage
+- 🤖 **Assistant IA** : Chatbot interactif pour naviguer le portfolio
+- 📄 **Export CV** : Generation PDF et Word compatible ATS
+- 📊 **Vercel Analytics** : Suivi des visiteurs et pages vues
+- 📱 **Responsive** : Design adapte mobile/tablette/desktop
+- 🎨 **Glassmorphism** : Effets visuels modernes
+- ⚡ **Sections conditionnelles** : Masquage automatique des sections vides
+- 🔗 **Navigation dynamique** : Liens generes selon les sections actives
+
+---
+
 ## 🚀 Installation Rapide (Windows)
 
 ### Methode 1 : Script automatique (recommande)
@@ -73,7 +86,9 @@ portfolio/
 │   │   ├── Projects.astro      ← Projets personnels/academiques
 │   │   ├── Contact.astro       ← Formulaire de contact
 │   │   ├── Footer.astro        ← Pied de page
-│   │   └── BackToTop.astro     ← Bouton retour haut
+│   │   ├── BackToTop.astro     ← Bouton retour haut
+│   │   ├── AiAssistant.astro   ← Chatbot IA interactif
+│   │   └── ResumeExport.astro  ← Export CV PDF/Word
 │   └── pages/
 │       └── index.astro         ← Page principale (sections conditionnelles)
 ├── public/                     ← Ressources statiques
