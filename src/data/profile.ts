@@ -192,12 +192,12 @@ export const profile: ProfileData = {
   ],
   education: [
     {
-      period: "2024 - Present",
-      degree: "Cycle Ingenieur",
-      field: "Sciences Appliquees",
-      institution: "ESISA - Ecole Superieure d'Ingenierie en Sciences Appliquees",
+      period: "Oct 2025 - Present",
+      degree: "Cycle Ingénieur",
+      field: "Ingénierie Logicielle (IL)",
+      institution: "ESISA - École Supérieure d'Ingénierie en Sciences Appliquées",
       institutionUrl: "https://esisa.ac.ma",
-      description: "Formation en ingenierie informatique avec specialisation en developpement logiciel et technologies web.",
+      description: "Formation d'ingénieur en informatique avec spécialisation en Ingénierie Logicielle. Développement d'applications, architecture logicielle et technologies modernes.",
       latest: true
     }
   ],
