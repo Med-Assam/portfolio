@@ -205,6 +205,7 @@ export const profile: ProfileData = {
   ],
   socialLinks: [
     { label: "GitHub", href: "https://github.com/Med-Assam", icon: "github" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/mohamed-assam-3b5b083b5", icon: "linkedin" },
     { label: "Email", href: "mailto:m.assam@esisa.ac.ma", icon: "mail" }
   ],
   academicLinks: []
